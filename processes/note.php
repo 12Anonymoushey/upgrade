@@ -1,8 +1,8 @@
 <?php
-
+include '../alert.php';
 require_once '../db_manager.php';
-require_once 'admin_processes/Feature_checker.php';
-require_once 'admin_processes/Rank_checker.php';
+require_once '../admin/admin_processes/Feature_checker.php';
+require_once '../admin/admin_processes/Rank_checker.php';
 session_start();
 $db = new DBManager();
 $write_conn = $db->getWriteConn();
@@ -10,8 +10,9 @@ $write_conn = $db->getWriteConn();
 if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
 {
     $user_id = $_POST['user_id'];
-    $note_id = $_POST['note_id'];
-    $capygrass = $_POST['totalCapygrass'];
+    $note_id = isset($_POST['note_id']) ? $_POST['note_id'] : "";
+    $capygrass = isset($_POST['totalCapygrass']) ? $_POST['totalCapygrass'] : "";
+    $admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : "";
     $action = $_POST['action'];
 
      $feature = new Feature_checker($user_id);
@@ -21,6 +22,9 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
     {
         $write_conn->begin_transaction();
         try{
+            $set_var_stmt = $write_conn->prepare("SET @current_admin_id = ?");
+            $set_var_stmt->bind_param("i", $admin_id);
+            $set_var_stmt->execute();
 
             $query = "UPDATE NOTES
                         SET pointsEarned = pointsEarned + 10, isApproved = 1
@@ -58,6 +62,10 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
     {
         $write_conn->begin_transaction();
         try{
+            $set_var_stmt = $write_conn->prepare("SET @current_admin_id = ?");
+            $set_var_stmt->bind_param("i", $admin_id);
+            $set_var_stmt->execute();
+            
             $query = "UPDATE NOTES
                         SET pointsEarned = pointsEarned - 10, isApproved = 0
                         WHERE note_id = ? AND user_id = ?";
@@ -90,7 +98,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             echo "<script>alert('{$e->getMessage()}');</script>";
         }
     }
-    elseif($action == "update")
+    elseif($action == "update" || $action == "user_update")
     {
         $title = $_POST['title'];
         $content = $_POST['content'];
@@ -112,7 +120,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             echo "<script>alert('{$e->getMessage()}');</script>";
         }
     }
-    elseif($action == "delete")
+    elseif($action == "delete" || $action == "user_delete")
     {
         $write_conn->begin_transaction();
         try{
@@ -131,27 +139,54 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             echo "<script>alert('{$e->getMessage()}');</script>";
         }
     }
+    elseif($action == "create")
+    {
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $write_conn->begin_transaction();
+        try{
+            $query = "INSERT INTO notes (user_id, title, content, pointsEarned, isApproved) VALUES (?, ?, ?, 0, 0)";
+            $stmt = $write_conn->prepare($query);
+            $stmt->bind_param("iss", $user_id, $title, $content);
+            $stmt->execute();
+            $write_conn->commit();
+            echo "<script>alert('Note Successfully Created')</script>";
+        } catch(Exception $e) {
+            $write_conn->rollback();
+            echo "<script>alert('{$e->getMessage()}')</script>";
+        }
+    }
     else{
          echo "<script>alert('nothing happened');</script>";
     }
 }
-
 ?>
+
 <!DOCTYPE html>
-    <html>
-    <head><title>notes</title></head>
-    <body>
-        <form id="returnForm" action="userProfile.php" method="POST" style="display: none;">
-            <input type="hidden" name="userProfile" value="true">
-            <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id); ?>">
-        </form>
-
-        <script>
-            document.getElementById("returnForm").submit();
-        </script>
-    </body>
-    </html>
-
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Note Management</title>
+</head>
+<body>
+    <form id="admin_note" action="../admin/userProfile.php" method="POST" style="display: none;">
+        <input type="hidden" name="userProfile" value="true">
+        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id);?>">
+    </form>
+    <form id="user_note" action="../user/user_home.php" method="POST" style="display: none;">
+        <input type="hidden" name="user_home" value="true">
+        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id);?>">
+    </form>
     <?php
-    exit(); 
+        if($action == "create" || $action == "user_update" || $action == "user_delete") {
+            echo "<script>document.getElementById('user_note').submit();</script>";
+        } else {
+            echo "<script>document.getElementById('admin_note').submit();</script>";
+        }
     ?>
+</body>
+</html>
+
+<?php
+exit();
+?>

@@ -61,6 +61,7 @@ class Rank_checker{
                     $user_feat_stmt->bind_param("ii", $user_id, $new_rank_id);
                     $user_feat_stmt->execute();
                     $this->write_conn->commit();
+                    
                     echo "<script>alert('you have ranked up')</script>";
                 } catch(Exception $e)
                 {

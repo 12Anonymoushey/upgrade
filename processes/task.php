@@ -1,5 +1,5 @@
 <?php
-
+include '../alert.php';
 require_once '../db_manager.php';
 require_once '../admin/admin_processes/Feature_checker.php';
 require_once '../admin/admin_processes/Rank_checker.php';
@@ -11,13 +11,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
 {
     $action = $_POST['action'];
     $user_id = $_POST['user_id'];
-    $task_id = $_POST['task_id'];
-    $capygrass = $_POST['totalCapygrass'];
     $feature = new Feature_checker($user_id);
     $rank = new Rank_checker($user_id);
 
     if($action == "approve")
     {
+        $task_id = $_POST['task_id']? $_POST['task_id'] : "";
+        $capygrass = $_POST['totalCapygrass']? $_POST['totalCapygrass'] : "";
         $write_conn->begin_transaction();
         try{
 
@@ -55,6 +55,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
     }
     elseif($action == "disapprove")
     {
+        $task_id = $_POST['task_id']? $_POST['task_id'] : "";
+        $capygrass = $_POST['totalCapygrass']? $_POST['totalCapygrass'] : "";
         $write_conn->begin_transaction();
         try{
 
@@ -92,6 +94,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
     }
     elseif($action == "update" || $action == "user_update")
     {
+        $capygrass = $_POST['totalCapygrass']? $_POST['totalCapygrass'] : "";
         $write_conn->begin_transaction();
         try{
             $description = $_POST['description'];
@@ -130,14 +133,14 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
     }
     elseif($action == "create")
     {
+        $description = $_POST['description'];
+        $tool_id = $_POST['tool_id'];
         $write_conn->begin_transaction();
-        $title = $_POST['title'];
-        $content = $_POST['content'];
         try{
-            $query = "INSERT INTO NOTES(user_id, title, content)
+            $query = "INSERT INTO TASKS(user_id, tool_id, description)
                                             VALUES(?,?,?)";
             $stmt = $write_conn->prepare($query);
-            $stmt->bind_param("iss", $user_id, $title, $content);
+            $stmt->bind_param("iis", $user_id, $tool_id, $description);
             $stmt->execute();
             $write_conn->commit();
             echo "<script>alert('Task Successfully created')</script>";
@@ -152,7 +155,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
         $write_conn->begin_transaction();
         try{
             $query = "UPDATE TASKS
-                        SET isFinished = 1, finishedAt = 
+                        SET isFinished = 1, finishedAt = CURRENT_TIMESTAMP
                         WHERE user_id = ?";
             $stmt = $write_conn->prepare($query);
             $stmt->bind_param("i", $user_id);
@@ -186,7 +189,6 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
     else{
         echo "<script>alert('None of it was a value of action hmmmm')</script>";
     }
-    echo "<script>alert('sala gid ang code{$action}')</script>";
 }
 
 ?>

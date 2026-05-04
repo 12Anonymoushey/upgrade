@@ -1,4 +1,5 @@
 <?php
+include '../alert.php';
 // logout.php
 session_start();
 session_unset();

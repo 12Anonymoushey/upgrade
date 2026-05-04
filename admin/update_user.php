@@ -1,7 +1,8 @@
 <?php
-
+include '../alert.php';
 require '../db_manager.php';
 session_start();
+include '../confirm.php';
 $db = new DBManager();
 $write_conn = $db->getWriteConn();
 $read_conn = $db->getReadConn();
@@ -42,7 +43,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_update']))
     <title>Update User</title>
 </head>
 <body>
-    <form id="form" action="userProfile.php" method="POST" style="display: none;">
+    <form id="form" action="admin_home.php" method="POST" style="display: none;">
         <input type="hidden" name="user_id" value=<?php echo $user_id; ?>>
         <input type="hidden" name="userProfile" value="true"> 
     </form>
