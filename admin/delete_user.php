@@ -1,5 +1,5 @@
 <?php
-include '../alert.php';
+require_once(__DIR__ . '/../modal.php');
 require '../db_manager.php';
 
 $db = new DBManager();
@@ -19,7 +19,18 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_user']))
         $stmt->execute();
 
         $write_conn->commit();
-        echo "<script>alert('Successfully deleted user')</script>";
+        echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'Successfully deleted user.',
+                            icon: '../assets/logo.png',
+                            redirect: 'admin_home.php'
+                        });
+                    };
+                </script>";
+
     } catch(Exception $e)
     {
         $write_conn->rollback();
@@ -37,8 +48,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_user']))
         <input type="hidden" name="user_id" value=<?php echo $user_id; ?>>
         <input type="hidden" name="userProfile" value="true"> 
     </form>
-    <script>
+    <!-- <script>
         document.getElementById("form").submit();
-    </script>
+    </script> -->
 </body>
 </html>

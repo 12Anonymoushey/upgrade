@@ -1,6 +1,5 @@
-<?php include '../alert.php'; ?>
 <?php
-
+require_once(__DIR__ . '/../modal.php');
 session_start();
 require '../db_manager.php';
 
@@ -198,6 +197,7 @@ $longest_streak = 0;
     <div class="left-container">
         <div class="left-btn btn-carousel">
             <button class="btn-toggle" id="btnProfile" onclick="openPanel('profilePanel')">
+                <img src="../assets/profile.png" alt="profile" onerror="this.style.display='none'">
                 <span class="btn-label">Profile</span>
             </button>
             <button class="btn-toggle" id="btnNotes" onclick="openPanel('notesPanel')">
@@ -209,12 +209,15 @@ $longest_streak = 0;
                 <span class="btn-label">Tasks</span>
             </button>
             <button class="btn-toggle" id="btnPomodoro" onclick="openPanel('pomodoroPanel')">
+                <img src="../assets/pomodoro.png" alt="pomodoro" onerror="this.style.display='none'">
                 <span class="btn-label">Pomodoro</span>
             </button>
             <button class="btn-toggle" id="btnLeitner" onclick="openPanel('leitnerPanel')">
+                <img src="../assets/leitner.png" alt="leitner" onerror="this.style.display='none'">
                 <span class="btn-label">Leitner</span>
             </button>
             <button class="btn-toggle" id="btnMyQuizzes" onclick="openPanel('myQuizzesPanel')">
+                <img src="../assets/myquizzes.png" alt="myquizzes" onerror="this.style.display='none'">
                 <span class="btn-label">My Quizzes</span>
             </button>
             <button class="btn-toggle" id="btnCustomize" onclick="openPanel('customizePanel')">
@@ -225,9 +228,7 @@ $longest_streak = 0;
     </div>
     <div class="right-container">
         <div class="panel hidden" id="profilePanel" style="margin-top: 20px;">
-    <button class="btn-toggle" onclick="closePanel('profilePanel')">
-        <span class="btn-label">Close</span>
-    </button>
+    <button type="button" onclick="closePanel('profilePanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
     <h2>My Profile</h2>
 
     <div class="profile-header" style="position: relative; margin-bottom: 60px;">
@@ -275,7 +276,7 @@ $longest_streak = 0;
 
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button type="submit" name="update_profile" class="action-btn" style="padding: 10px 20px; font-size: 1rem;">Save Changes</button>
-                <button type="button" onclick="toggleProfileEdit()" class="btn-toggle" style="padding: 10px 20px; font-size: 1rem;">Cancel</button>
+                <button type="button" onclick="toggleProfileEdit()" class="btn-toggle" style="padding: 10px 20px; font-size: 1rem; background-color: #02084B; color: white;">Cancel</button>
             </div>
         </form>
     </div>
@@ -302,21 +303,28 @@ $longest_streak = 0;
 
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button type="submit" name="change_password" class="action-btn" style="padding: 10px 20px; font-size: 1rem; background-color: #f39c12;">Update Password</button>
-                <button type="button" onclick="togglePasswordEdit()" class="btn-toggle" style="padding: 10px 20px; font-size: 1rem;">Cancel</button>
+                <button type="button" onclick="togglePasswordEdit()" class="btn-toggle" style="padding: 10px 20px; font-size: 1rem; background-color: #02084B; color: white;">Cancel</button>
             </div>
         </form>
     </div>
 </div>
         <div class="panel hidden" id="notesPanel">
-             <button class="btn-toggle"
-                onclick="closePanel('notesPanel')">
-                <span class="btn-label">Close</span>
-            </button>
-            <div>
-                <h3>Notes</h3>
+             <button type="button" onclick="closePanel('notesPanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            <div class="panel-content">
+                <div class="panel-header">
+                    <h3>Notes</h3>
+                </div>
                 <form action="../processes/note.php" method="POST">
-                    <input type="text" name="title" placeholder="Note Title" required>
+                   <div class="input-group">
+                    <label for="title">Title</label>
+                     <input type="text" name="title" placeholder="Note Title" required>
+                   </div>
+
+                   <div class="input-group">
+                    
                     <textarea name="content" rows="4" placeholder="Type your Note content here..." required></textarea>
+                   </div>
+                   
                     <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
                     <input type="hidden" name="action" value="create">
                     <button type="submit" name="note" class="action-btn">Submit Note</button>
@@ -354,7 +362,7 @@ $longest_streak = 0;
                                     } else {
                                         echo "<td><span style='color:#f39c12;'>Pending</span></td>
                                             <td>
-                                                <form action='../processes/note.php' method='POST' onsubmit=\"return confirm('Are you sure you want to delete this note?')\">
+                                                <form class='delete-form' data-type='note' action='../processes/note.php' method='POST'>
                                                     <input type='hidden' name='user_id' value='{$user_id}'>
                                                     <input type='hidden' name='note_id' value='{$note_row['note_id']}'>
                                                     <input type='hidden' name='action' value='user_delete'>
@@ -388,10 +396,7 @@ $longest_streak = 0;
         </div>
 
         <div class="panel hidden" id="tasksPanel" style="margin-top: 20px;">
-            <button class="btn-toggle"
-                onclick="closePanel('tasksPanel')">
-                <span class="btn-label">Close</span>
-            </button>
+             <button type="button" onclick="closePanel('tasksPanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
             <h3>Task Manager</h3>
             <form action="../processes/task.php" method="POST">
                 <textarea name="description" rows="4" placeholder="Type your Task Description here..." required></textarea>
@@ -439,7 +444,7 @@ $longest_streak = 0;
                                                  </td>")) .                    
                                         (empty($task_row['finishedAt']) ?
                                             "<td>
-                                                <form action='../processes/task.php' method='POST' onsubmit=\"return confirm('Are you sure you want to delete this task?')\">
+                                                <form class='delete-form' data-type='task' action='../processes/task.php' method='POST'>
                                                     <input type='hidden' name='user_id' value='{$user_id}'>
                                                     <input type='hidden' name='task_id' value='{$task_row['task_id']}'>
                                                     <input type='hidden' name='action' value='user_delete'>
@@ -451,7 +456,7 @@ $longest_streak = 0;
                                             "<td>
                                                 <button onclick=\"openPanel('update_task_{$task_row['task_id']}')\">Update</button>
                                                 <div id='update_task_{$task_row['task_id']}' class='panel hidden'>
-                                                    <form action='../processes/task.php' method='POST' onsubmit=\"return confirm('Are you sure you want to update this task?')\">
+                                                    <form class='update-task-form' action='../processes/task.php' method='POST'>
                                                         <input type='hidden' name='user_id' value='{$user_id}'>
                                                         <input type='hidden' name='task_id' value='{$task_row['task_id']}'>
                                                         <input type='hidden' name='action' value='user_update'>
@@ -473,10 +478,7 @@ $longest_streak = 0;
         </div>
 
         <div class="panel hidden" id="pomodoroPanel" style="margin-top: 20px;">
-            <button class="btn-toggle"
-                onclick="closePanel('pomodoroPanel')">
-                <span class="btn-label">Close</span>
-            </button>
+            <button type="button" onclick="closePanel('pomodoroPanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
             <h1>Pomodoro</h1>
             <div class="pomodoro-settings">
                 <div class="pomodoro-input-group">
@@ -502,10 +504,7 @@ $longest_streak = 0;
         </div>
 
         <div class="panel hidden" id="leitnerPanel" style="margin-top: 20px;">
-            <button class="btn-toggle"
-                onclick="closePanel('leitnerPanel')">
-                <span class="btn-label">Close</span>
-            </button>
+            <button type="button" onclick="closePanel('leitnerPanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
             <h2>Community Leitner Quizzes</h2>
             <p>Study flashcards created by other students to earn Capygrass!</p>
 
@@ -542,9 +541,7 @@ $longest_streak = 0;
         </div>
 
         <div class="panel hidden" id="myQuizzesPanel" style="margin-top: 20px;">
-    <button class="btn-toggle" onclick="closePanel('myQuizzesPanel')">
-        <span class="btn-label">Close</span>
-    </button>
+     <button type="button" onclick="closePanel('myQuizzesPanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
     <h2>My Leitner Quizzes</h2>
     <p>Create and manage your own flashcard decks.</p>
 
@@ -594,10 +591,7 @@ $longest_streak = 0;
 </div>
 
         <div class="panel scrollablePanel hidden" id="customizePanel" style="margin-top: 20px;">
-            <button class="btn-toggle"
-                onclick="closePanel('customizePanel')">
-                <span class="btn-label">Close</span>
-            </button>
+            <button type="button" onclick="closePanel('customizePanel')" style="position: absolute; top: 15px; right: 20px; background: #eee; border: none; font-size: 1.5rem; cursor: pointer; color: #333; z-index: 10; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">&times;</button>
             <div style="width: 100%; height: 150px; background-image: url('../uploads/<?php echo htmlspecialchars($user_data['profile_banner'] ?? ''); ?>'); background-color: #ddd; background-size: cover; background-position: center; border-radius: 8px; margin-bottom: 20px; border: 2px solid var(--primary);"></div>
             
             <h2>Profile Customization</h2>
@@ -838,5 +832,89 @@ function toggleProfileEdit() {
         confirmNewPassword.addEventListener('keyup', validateNewPasswordMatch);
     }
 </script>
+
+<script src="user_home.js"></script>
+
+<!-- <script>
+document.addEventListener("submit", function (e) {
+
+    const form = e.target;
+
+    if (!form.classList.contains("delete-form")) return;
+
+    e.preventDefault();
+
+    const type = form.dataset.type || "item";
+
+    triggerModal({
+        theme: "warning",
+        title: `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}`,
+        message: `Are you sure you want to delete this ${type}?`,
+        type: "confirm",
+        buttonText: "Yes, Delete",
+        onConfirm: () => form.submit()
+    });
+
+});
+</script>
+
+<script>
+    document.addEventListener("submit", function (e) {
+
+    const form = e.target;
+
+    if (!form.classList.contains("update-task-form")) return;
+
+    e.preventDefault();
+
+    triggerModal({
+        theme: "warning",
+        title: "Update Task",
+        message: "Are you sure you want to update this task?",
+        type: "confirm",
+        buttonText: "Yes, Update",
+        onConfirm: () => form.submit()
+    });
+
+});
+</script> -->
+
+<?php include '../modal.php'; ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Listen for any click on the entire page
+    document.body.addEventListener("click", function(e) {
+        
+        // 2. Check if what was clicked is a Delete Button inside one of your forms
+        // This looks for buttons inside forms with class 'delete-form'
+        const btn = e.target.closest(".delete-form button");
+        
+        if (btn) {
+            // 3. Stop the form from submitting immediately
+            e.preventDefault();
+            
+            // 4. Find the specific form this button belongs to
+            const form = btn.closest("form");
+            const type = form.getAttribute("data-type") || "item";
+
+            // 5. Trigger your modal
+            triggerModal({
+                type: 'confirm',
+                theme: 'warning',
+                title: `Delete ${type.charAt(0).toUpperCase() + type.slice(1)}?`,
+                message: `Are you sure you want to delete this ${type}? This cannot be undone.`,
+                icon: '../assets/logo.png'
+                buttonText: 'Yes, Delete',
+                onConfirm: function() {
+                    // 6. If they confirm, manually submit THIS specific form
+                    form.submit();
+                }
+            });
+        }
+    });
+});
+</script>
+
 </body>
 </html>

@@ -1,5 +1,5 @@
 <?php
-
+require_once(__DIR__ . '/../../modal.php');
 require_once '../db_manager.php';
 
 class Rank_checker{
@@ -43,7 +43,16 @@ class Rank_checker{
                     $user_rank_stmt->bind_param("ii", $user_id, $new_rank_id);
                     $user_rank_stmt->execute();
                     $this->write_conn->commit();
-                    echo "<script>alert('you have ranked down')</script>";
+                    echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'warning',
+                            title: 'Warning',
+                            message: 'You have ranked down.',
+                            icon: 'assets/logo.png',
+                        });
+                    };
+                </script>";
                 } catch(Exception $e)
                 {
                     echo "<script>alert($e->getMessage())</script>";
@@ -62,14 +71,32 @@ class Rank_checker{
                     $user_feat_stmt->execute();
                     $this->write_conn->commit();
                     
-                    echo "<script>alert('you have ranked up')</script>";
+                    echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Congratulations!',
+                            message: 'You have ranked up.',
+                            icon: 'assets/logo.png',
+                        });
+                    };
+                </script>";
                 } catch(Exception $e)
                 {
                     echo "<script>alert($e->getMessage())</script>";
                     $this->write_conn->rollback();
                 }
             }
-            echo "<script>alert('There are no changes in rank')</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'notification',
+                            title: 'Notification',
+                            message: 'There are no changes in rank.',
+                            icon: 'assets/logo.png',
+                        });
+                    };
+                </script>";
         }
         return null;
     }

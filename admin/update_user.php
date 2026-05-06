@@ -1,8 +1,8 @@
 <?php
-include '../alert.php';
+require_once(__DIR__ . '/../modal.php');
 require '../db_manager.php';
-session_start();
-include '../confirm.php';
+// session_start();
+// include '../confirm.php';
 $db = new DBManager();
 $write_conn = $db->getWriteConn();
 $read_conn = $db->getReadConn();
@@ -28,7 +28,17 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_update']))
         $update_stmt->bind_param("ssssssi", $fName, $mName, $lName, $email, $username, $password, $user_id);
         $update_stmt->execute();
         $write_conn->commit();
-        echo "<script>alert('User Successfully Updated!');</script>";
+        echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'User successfully updated!.',
+                            icon: '../assets/logo.png',
+                            redirect: 'admin_home.php'
+                        });
+                    };
+                </script>";
     } catch(Exception $e)
     {
         $write_conn->rollback();
@@ -47,8 +57,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['confirm_update']))
         <input type="hidden" name="user_id" value=<?php echo $user_id; ?>>
         <input type="hidden" name="userProfile" value="true"> 
     </form>
-    <script>
+    <!-- <script>
         document.getElementById("form").submit();
-    </script>
+    </script> -->
 </body>
 </html>

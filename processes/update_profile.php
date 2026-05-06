@@ -1,6 +1,6 @@
 <?php
 session_start();
-include '../alert.php';
+require_once(__DIR__ . '/../modal.php');
 // Adjust this path if your db_manager.php is located elsewhere
 require_once '../db_manager.php'; 
 
@@ -8,7 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     
     // Check if user is logged in
     if (!isset($_SESSION['user_id'])) {
-        echo "<script>alert('Please log in first.'); window.location.href='../index.php';</script>";
+        echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'warning',
+                            title: 'Warning',
+                            message: 'Please log in first.',
+                            icon: '../assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
         exit();
     }
 
@@ -50,11 +60,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
                 $types .= "s";
                 $params[] = $new_file_name;
             } else {
-                echo "<script>alert('Failed to move uploaded file.'); window.history.back();</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'error',
+                            title: 'Failed',
+                            message: 'Failed to move uploaded file.',
+                            icon: '../assets/logo.png',
+                            redirect: 'javascript:history.back()'
+                        });
+                    };
+                </script>";
                 exit();
             }
         } else {
-            echo "<script>alert('Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.'); window.history.back();</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'warning',
+                            title: 'Invalid',
+                            message: 'Invalid file type. Only JPG, JPEG, PNG, and GIF are allowed.',
+                            icon: '../assets/logo.png',
+                            redirect: 'javascript:history.back()'
+                        });
+                    };
+                </script>";
             exit();
         }
     }
@@ -71,9 +101,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
     $stmt->bind_param($types, ...$params);
 
     if ($stmt->execute()) {
-        echo "<script>alert('Profile updated successfully!'); window.location.href='../user/user_home.php';</script>";
+       echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Updated',
+                            message: 'Profile updated successfully!',
+                            icon: '../assets/logo.png',
+                            redirect: '../user/user_home.php'
+                        });
+                    };
+                </script>";
     } else {
-        echo "<script>alert('Error updating profile. Please try again.'); window.history.back();</script>";
+        echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'error',
+                            title: 'Error',
+                            message: 'Error updating profile. Please try again',
+                            icon: '../assets/logo.png',
+                            redirect: '../user/user_home.php'
+                        });
+                    };
+                </script>";
     }
 
     $stmt->close();

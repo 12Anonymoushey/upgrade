@@ -1,0 +1,34 @@
+:root{
+    danger: red;
+}
+
+.popup-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8); display: none; align-items: center; 
+        justify-content: center; z-index: 9999;
+    }
+    .popup {
+        width: 400px; background: #fff; border-radius: 15px; padding: 30px;
+        text-align: center; transform: scale(0.1); visibility: hidden;
+        transition: all 0.3s ease-in-out; border-top: 10px solid #ccc;
+    }
+    .open-popup { visibility: visible; transform: scale(1); }
+    
+    /* THEMES - These change the colors based on the type */
+    .popup.theme-success { border-top-color: #28a745; }
+    .popup.theme-success h2 { color: #28a745; }
+    .popup.theme-success .btn-main { background: #28a745; color: white; }
+
+    .popup.theme-error { border-top-color: #dc3545; }
+    .popup.theme-error h2 { color: #dc3545; }
+    .popup.theme-error .btn-main { background: #dc3545; color: white; }
+
+    .popup.theme-warning { border-top-color: #ffc107; }
+    .popup.theme-warning h2 { color: #856404; }
+    .popup.theme-warning .btn-main { background: #ffc107; color: black; }
+
+    .popup.theme-notification { border-top-color: #02084B; }
+    .popup.theme-notification h2 { color:#000427; }
+    .popup.theme-notification .btn-main { background: #02084B; color: white; }
+
+    .popup img { width: 80px; margin-top: -60px; border-radius: 50%; background: #fff; padding: 5px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }

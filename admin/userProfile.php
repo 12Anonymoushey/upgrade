@@ -1,8 +1,8 @@
 <?php
-include '../alert.php';
+require_once(__DIR__ . '/../modal.php');
 require_once '../db_manager.php';
 session_start();
-include '../confirm.php';
+// include '../confirm.php';
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['userProfile']))
 {
@@ -21,9 +21,20 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['userProfile']))
     {
         $user_result = $user_stmt->get_result();
         $user_row = $user_result->fetch_assoc();
+
+        
     }
     else{
-        echo "<script>window.alert('could not execute USERS query')</script>";
+        echo "<script>
+                window.onload = function() {
+                    triggerModal({
+                        theme: 'error',
+                        title: 'Error: ',
+                        message: 'Could not execute USERS query.',
+                        icon: 'assets/logo.png',
+                    });
+                };
+            </script>";
     }
 
     //get notes
@@ -112,8 +123,6 @@ if(!empty($_SESSION['alert']))
     </style>
 </head>
 <body>
-    <?php include __DIR__ . '/../alert.php'; ?>
-    <?php include __DIR__ . '/../confirm.php'; ?>
     
     <div class="userprofile-container">
         
@@ -147,11 +156,13 @@ if(!empty($_SESSION['alert']))
             </div>
         </header>
 
+        <!-- I edit here the confirm. -->
         <div class="admin-actions" style="margin-bottom: 20px; display: flex; gap: 10px;">
             <button class="update-btn" onclick="openPanel('update_panel')" style="padding: 10px 20px; background: #f39c12; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Edit User Information</button>
-            <form action="delete_user.php" method="POST" onsubmit="return confirm('Are you absolutely sure you want to completely delete this user? This cannot be undone.')" style="margin: 0;">
+            <form id="deleteForm" action="delete_user.php" method="POST" style="margin: 0;">
                 <input type="hidden" name="user_id" value="<?php echo $user_id; ?>">
-                <button type="submit" name="delete_user" class="delete-btn" style="padding: 10px 20px; background: #e74c3c; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Delete User</button>
+                <input type="hidden" name="delete_user" value="1">
+                <button type="button" onclick="confirmDelete()" name="delete_user" class="delete-btn" style="padding: 10px 20px; background: #e74c3c; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Delete User</button>
             </form>
         </div>
 
@@ -211,16 +222,17 @@ if(!empty($_SESSION['alert']))
                                         <td>{$notes_rows['pointsEarned']}</td>" . 
                                         ($notes_rows['isApproved'] == 1 ? "<td style='color:green;'>Approved</td>" : "<td style='color:orange;'>Not Yet Approved</td>") .
                                         
+                                        // dont copy entirely this code i edit something for confirm here stick to your code
                                         "<td>" . 
                                         ($notes_rows['isApproved'] == 1 ? "
-                                            <form action='note.php' method='POST' onsubmit=\"return confirm('Are you sure you wanna un-approve this note?')\">
+                                            <form action='../processes/note.php' method='POST' class='js-confirm' data-message='Are you sure you wanna un-approve this note?'>
                                                 <input type='hidden' name='user_id' value='{$user_id}'>
                                                 <input type='hidden' name='note_id' value='{$notes_rows['note_id']}'>
                                                 <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
                                                 <input type='hidden' name='action' value='disapprove'>
                                                 <button type='submit' name='note' style='background:#e74c3c; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;'>Disapprove</button>
                                             </form>" :
-                                            "<form action='note.php' method='POST' onsubmit=\"return confirm('Are you sure you wanna Approve this note?')\">
+                                            "<form action='../processes/note.php' method='POST' class='js-confirm' data-message='Are you sure you wanna Approve this note?'>
                                                 <input type='hidden' name='user_id' value='{$user_id}'>
                                                 <input type='hidden' name='note_id' value='{$notes_rows['note_id']}'>
                                                 <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
@@ -230,9 +242,10 @@ if(!empty($_SESSION['alert']))
                                         ) . 
                                         "</td>
                                         
+
                                         <td style='display:flex; gap:5px;'>
                                             <button onclick=\"openPanel('update_note_{$notes_rows['note_id']}')\" style='background:#3498db; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;'>Edit</button>
-                                            <form action='note.php' method='POST' onsubmit=\"return confirm('Are you sure you wanna delete this note?')\">
+                                            <form action='../processes/note.php' method='POST' class='js-confirm' data-message='Are you sure you wanna delete this note?'>
                                                 <input type='hidden' name='user_id' value='{$user_id}'>
                                                 <input type='hidden' name='note_id' value='{$notes_rows['note_id']}'>
                                                 <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
@@ -240,18 +253,28 @@ if(!empty($_SESSION['alert']))
                                                 <button type='submit' name='note' style='background:#c0392b; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;'>Delete</button>
                                             </form>
                                             
-                                            <div id='update_note_{$notes_rows['note_id']}' class='panel hide' style='position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:1000;'>
-                                                <h3>Edit Note</h3>
-                                                <form action='note.php' method='POST' style='display:flex; flex-direction:column; gap:10px;'>
+
+                                            <div id='update_note_{$notes_rows['note_id']}' class='panel hide' style='position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:1000; width: 50%; height: 70%; flex-direction:column;'>
+                                                <h2 style='margin: 0 0 20px 0; padding: 0; color: #333; font-size: 1.5rem;'>Edit Note</h2>
+                                                <form action='../processes/note.php' method='POST' style='display:flex; flex-direction:column; gap:15px; flex-grow:1;'>
                                                     <input type='hidden' name='user_id' value='{$user_id}'>
                                                     <input type='hidden' name='note_id' value='{$notes_rows['note_id']}'>
                                                     <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
                                                     <input type='hidden' name='action' value='update'>
-                                                    <label>Title: <input type='text' name='title' value='{$notes_rows['title']}' style='width:100%;'></label>
-                                                    <label>Content: <textarea name='content' rows='4' style='width:100%;'>{$notes_rows['content']}</textarea></label>    
-                                                    <div style='display:flex; gap:10px;'>
-                                                        <button type='submit' name='note' style='background:#2ecc71; color:#fff; border:none; padding:8px; border-radius:4px;'>Save Update</button>
-                                                        <button type='button' onclick=\"closePanel('update_note_{$notes_rows['note_id']}')\" style='background:#95a5a6; color:#fff; border:none; padding:8px; border-radius:4px;'>Close</button>
+                                                    
+                                                    <div style='display:flex; flex-direction:column; gap:5px;>
+                                                        <label style='font-weight: bold;'>Title:</label>
+                                                        <input type='text' name='title' value='{$notes_rows['title']}' style='width:100%; padding: 10 px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;'>
+                                                    </div>
+
+                                                    <div style='display:flex; flex-direction:column; gap:5px; flex-grow: 1;>
+                                                        <label style='font-weight: bold;>Content:</label>
+                                                        <textarea name='content' rows='4' style='width:100%; flex-grow:1; padding:10px; border: 1px solid #ccc; border-radius:4px; box-sizing:border-box; resize:none; font-family: inherit;'>{$notes_rows['content']}</textarea>
+                                                    </div>
+
+                                                    <div style='display:flex; gap:10px; padding-top:10px;'>
+                                                        <button type='submit' name='note' style='background:#2ecc71; color:#fff; border:none; padding:12px 25px; border-radius:4px; cursor:pointer; font-weight:bold;'>Save Update</button>
+                                                        <button type='button' onclick=\"closePanel('update_note_{$notes_rows['note_id']}')\" style='background:#95a5a6; color:#fff; border:none; padding:12px 25px; border-radius:4px; cursor:pointer;'>Close</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -297,14 +320,14 @@ if(!empty($_SESSION['alert']))
                                         
                                         "<td>" . 
                                         ($task_row['isApproved'] == 1 ?
-                                            "<form action='task.php' method='POST' onsubmit=\"return confirm('Are you sure you wanna Cancel the approval of this task?')\">
+                                            "<form action='../processes/task.php' method='POST' class='js-confirm' data-message='Are you sure you wanna Cancel the approval of this task?'>
                                                 <input type='hidden' name='user_id' value='{$user_id}'>
                                                 <input type='hidden' name='task_id' value='{$task_row['task_id']}'>
                                                 <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
                                                 <input type='hidden' name='action' value='disapprove'>
                                                 <button type='submit' name='task' style='background:#e74c3c; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;'>Revoke</button>
                                             </form>" :
-                                            "<form action='task.php' method='POST' onsubmit=\"return confirm('Are you sure you wanna Approve this task?')\">
+                                            "<form action='../processes/task.php' method='POST' class='js-confirm' data-message='Are you sure you wanna Approve this task?'>
                                                 <input type='hidden' name='user_id' value='{$user_id}'>
                                                 <input type='hidden' name='task_id' value='{$task_row['task_id']}'>
                                                 <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
@@ -315,7 +338,7 @@ if(!empty($_SESSION['alert']))
                                         "</td>
                                         <td style='display:flex; gap:5px;'>
                                             <button onclick=\"openPanel('update_task_{$task_row['task_id']}')\" style='background:#3498db; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;'>Edit</button>
-                                            <form action='task.php' method='POST' onsubmit=\"return confirm('Are you sure you wanna delete this task?')\">
+                                            <form action='../processes/task.php' method='POST' class='js-confirm' data-message='Are you sure you wanna delete this task?'>
                                                 <input type='hidden' name='user_id' value='{$user_id}'>
                                                 <input type='hidden' name='task_id' value='{$task_row['task_id']}'>
                                                 <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
@@ -323,17 +346,22 @@ if(!empty($_SESSION['alert']))
                                                 <button type='submit' name='task' style='background:#c0392b; color:#fff; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;'>Delete</button>
                                             </form>
 
-                                            <div id='update_task_{$task_row['task_id']}' class='panel hide' style='position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:20px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:1000;'>
-                                                <h3>Edit Task</h3>
-                                                <form action='task.php' method='POST' style='display:flex; flex-direction:column; gap:10px;'>
+                                            <div id='update_task_{$task_row['task_id']}' class='panel hide' style='position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:30px; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); z-index:1000; width: 50%; height: 70%; display:flex; flex-direction:column;'>
+                                                <h2 style='margin: 0 0 20px 0; padding: 0; color: #333; font-size: 1.5rem;'>Edit Task</h2>
+                                                <form action='../processes/task.php' method='POST' style='display:flex; flex-direction:column; gap:15px; flex-grow:1;'>
                                                     <input type='hidden' name='user_id' value='{$user_id}'>
                                                     <input type='hidden' name='task_id' value='{$task_row['task_id']}'>
                                                     <input type='hidden' name='totalCapygrass' value='{$user_row['totalCapygrass']}'>
                                                     <input type='hidden' name='action' value='update'>
-                                                    <label>Description: <textarea name='description' rows='3' style='width:100%;'>{$task_row['description']}</textarea></label>
-                                                    <div style='display:flex; gap:10px;'>
-                                                        <button type='submit' name='task' style='background:#2ecc71; color:#fff; border:none; padding:8px; border-radius:4px;'>Update</button>
-                                                        <button type='button' onclick=\"closePanel('update_task_{$task_row['task_id']}')\" style='background:#95a5a6; color:#fff; border:none; padding:8px; border-radius:4px;'>Close</button>
+
+                                                    <div style='display:flex; flex-direction:column; gap:5px; flex-grow: 1;'>
+                                                        <label style='font-weight: bold;'>Description:</label>
+                                                        <textarea name='description' rows='4' style='width:100%; flex-grow:1; padding:10px; border: 1px solid #ccc; border-radius:4px; box-sizing:border-box; resize:none; font-family: inherit;'>{$task_row['description']}</textarea>
+                                                    </div>
+
+                                                    <div style='display:flex; gap:10px; padding-top:10px;'>
+                                                        <button type='submit' name='task' style='background:#2ecc71; color:#fff; border:none; padding:12px 25px; border-radius:4px; cursor:pointer; font-weight:bold;'>Update</button>
+                                                        <button type='button' onclick=\"closePanel('update_task_{$task_row['task_id']}')\" style='width:100%; padding: 10 px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;'>Close</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -504,5 +532,47 @@ if(!empty($_SESSION['alert']))
         }
     </script>
     <script src="admin_side.js"></script>
+
+    <!-- <script>
+    function confirmDelete() {
+        triggerModal({
+            type: 'confirm',
+            theme: 'warning',
+            title: 'Are you sure?',
+            message: 'Are you absolutely sure you want to completely delete this user? This cannot be undone.',
+            buttonText: 'Yes, Delete',
+            icon: '../assets/logo.png', // Ensure this path is correct
+            onConfirm: function() {
+                // This submits the form to delete_user.php exactly as before
+                document.getElementById('deleteForm').submit();
+            }
+        });
+    }
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".js-confirm").forEach(form => {
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const message = form.dataset.message || "Are you sure?";
+
+            triggerModal({
+                type: 'confirm',
+                theme: 'warning',
+                title: 'Confirm Action',
+                message: message,
+                buttonText: 'Yes, Continue',
+                icon: '../assets/logo.png',
+                onConfirm: function () {
+                    form.submit();
+                }
+            });
+        });
+    });
+});
+</script> -->
+
 </body>
 </html>

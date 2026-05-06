@@ -31,7 +31,7 @@ body{
 }
 
 .back-btn {
-    background: transparent;
+    background: #02084B;
     border: 1px solid rgba(255,255,255,0.3);
     color: white;
     padding: 8px 15px;
@@ -41,7 +41,7 @@ body{
     transition: 0.3s;
 }
 
-.back-btn:hover { background: rgba(255,255,255,0.1); }
+.back-btn:hover { background: rgba(20, 4, 250); }
 
 .user-summary {
     display: flex;
@@ -251,4 +251,106 @@ button[name="note"], button[name="task"] {
     padding: 12px 25px; 
     border-radius: 8px; 
     cursor: pointer; 
+}
+
+/* Modal Container */
+.edit-modal-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    width: 90%;
+    max-width: 500px; /* Aligns with dashboard width */
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.edit-modal-content {
+    padding: 25px;
+}
+
+.edit-modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2d3436;
+    font-size: 1.4rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Form Layout */
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Creates space between Title and Content sections */
+}
+
+.edit-label {
+    display: flex;
+    flex-direction: column; /* Puts Label text ABOVE the input */
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #636e72;
+}
+
+/* Inputs & Textarea */
+.edit-input, .edit-textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #dfe6e9;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    box-sizing: border-box; /* Prevents input from sticking out */
+    transition: border-color 0.2s;
+}
+
+.edit-input:focus, .edit-textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+.edit-textarea {
+    resize: vertical;
+    min-height: 120px;
+}
+
+/* Buttons */
+.edit-button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.edit-button-group button {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-save {
+    background: #2ecc71;
+    color: white;
+}
+
+.btn-close {
+    background: #95a5a6;
+    color: white;
+}
+
+.edit-button-group button:hover {
+    opacity: 0.9;
+}
+
+/* Hidden State */
+.hide {
+    display: none !important;
 }

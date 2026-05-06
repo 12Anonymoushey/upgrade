@@ -1,4 +1,4 @@
-<div id="customConfirmOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
+<!-- <div id="customConfirmOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center;">
     <div class="alert-card" style="background: white; padding: 20px; border-radius: 8px; text-align: center; min-width: 300px;">
         <h3 id="confirmTitle">Confirmation</h3>
         <p id="customConfirmText" style="margin: 15px 0;"></p>
@@ -86,4 +86,4 @@
         return false; 
     };
 })();
-</script>
+</script> -->

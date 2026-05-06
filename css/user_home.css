@@ -245,8 +245,8 @@ body {
 }
 
 .btn-toggle img {
-    width: 70px;           
-    height: 70px;
+    width: 50px;           
+    height: 50px;
     object-fit: contain;   
     display: block;
     filter: grayscale(100%);
@@ -442,4 +442,246 @@ button.action-btn:hover {
 
 #pomodoroPanel button:active {
     transform: scale(0.95);
+}
+
+/* Panel Container */
+#notesPanel {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    max-width: 500px;
+    width: 90%;
+}
+
+/* Close Button Styling */
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: #f0f0f0;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.close-btn:hover {
+    background: #e74c3c;
+    color: white;
+}
+
+/* Typography */
+.panel-header h3 {
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    border-bottom: 2px solid #f8f9fa;
+    padding-bottom: 10px;
+}
+
+/* Form Layout */
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #7f8c8d;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Inputs & Textarea */
+.note-form input[type="text"], 
+.note-form textarea {
+    padding: 12px 15px;
+    border: 1px solid #dcdde1;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #fcfcfc;
+}
+
+.note-form input:focus, 
+.note-form textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+}
+
+/* The Submit Button */
+.action-btn {
+    width: 100%;
+    padding: 14px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+
+.action-btn:hover {
+    background: #2980b9;
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+}
+
+/* Panel Container */
+#notesPanel {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: #333;
+    width: 95%; /* Responsive width */
+    max-width: 900px; /* Limits how wide it gets on desktop */
+    margin: 20px auto; /* Centers the whole panel */
+}
+
+.panel-content {
+    padding: 24px;
+}
+
+.panel-header h3 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #2d3436;
+}
+
+/* Form Styling */
+.input-group {
+    margin-bottom: 16px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #636e72;
+}
+
+input[type="text"], 
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #dfe6e9;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-sizing: border-box; /* Crucial: includes padding in width calculation */
+}
+
+input[type="text"]:focus, 
+textarea:focus {
+    border-color: #0984e3;
+    outline: none;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
+}
+
+.action-btn {
+    background-color: #02084B;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100%; 
+    box-sizing: border-box;
+}
+
+/* Modern Table Styling - Adjusted for same width */
+table {
+    width: 100%; /* Makes table match the form width exactly */
+    table-layout: fixed; /* Prevents content from stretching the table width */
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 15px;
+    border: 1px solid #dfe6e9;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+thead th {
+    background-color: #f1f2f6;
+    color: #2d3436;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px;
+    border-bottom: 1.5px solid #dfe6e9;
+    text-align: left;
+}
+
+tbody td {
+    padding: 14px;
+    border-bottom: 1px solid #f1f2f6;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word; /* Ensures long text wraps instead of stretching width */
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Button UI in Table */
+button {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1.5px solid #dfe6e9;
+    background: white;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #2d3436;
+    transition: all 0.2s;
+}
+
+button:hover {
+    background: #f8f9fa;
+    border-color: #b2bec3;
+}
+
+/* Delete Button Specifics */
+.delete-form button {
+    border-color: #fab1a0;
+    color: #d63031;
+}
+
+.delete-form button:hover {
+    background: #fff5f5;
+    border-color: #d63031;
+}
+
+/* Status Text Styles */
+span[style*='#2ecc71'] {
+    background: #e3fcef;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+span[style*='#f39c12'] {
+    background: #fff4e6;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    display: inline-block;
 }

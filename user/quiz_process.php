@@ -1,5 +1,5 @@
 <?php
-include '../alert.php';
+require_once(__DIR__ . '/modal.php');
 require_once '../db_manager.php';
 require_once '../admin/admin_processes/Rank_checker.php';
 session_start();
@@ -56,7 +56,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $rank = new Rank_checker($user_id);
             $rank->check_rank($new_capygrass);
 
-            echo "<script>alert('Deck completed! You earned 20 Capygrass.'); window.location.href='../user/user_home.php';</script>";
+           echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Deck completed!',
+                            message: 'You earned 20 Capygrass.',
+                            icon: 'assets/logo.png',
+                            redirect: '../user/user_home.php'
+                        });
+                    };
+                </script>";
+            
         } catch(Exception $e) {
             $write_conn->rollback();
             echo "<script>alert('Error: " . $e->getMessage() . "'); window.location.href='../user/user_home.php';</script>";

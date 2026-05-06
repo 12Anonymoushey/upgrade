@@ -1,5 +1,5 @@
 <?php
-include '../alert.php';
+include 'modal.php';
 session_start();
 require 'db_manager.php';
 
@@ -44,10 +44,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             {
                 if($row['email'] == trim($email))
                 {
-                    echo "<script>window.alert('Your email has already been used'); window.location.href='index.php';</script>";
+                    echo "<script>
+                        window.onload = function() {
+                            triggerModal({
+                                theme: 'warning',
+                                title: 'Warning',
+                                message: 'Your email has already been used.',
+                                icon: 'assets/logo.png',
+                                redirect: 'index.php'
+                            });
+                        };
+                    </script>";
                 }
                 else{
-                    echo "<script>window.alert('Username taken'); window.location.href='index.php';</script>";
+                    echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'warning',
+                            title: 'Warning',
+                            message: 'Username taken.',
+                            icon: 'assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
                 }
             }
         }
@@ -82,11 +102,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $feature_stmt->execute();
                 
                 $write_conn->commit();
-                echo "<script>alert('Succesfully created user'); window.location.href='index.php'</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Registration Succeed',
+                            message: 'Succesfully created user.',
+                            icon: 'assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
             } catch(Exception $e)
             {
                 $write_conn->rollback();
-                echo "<script>window.alert('Cannot execute insert to user'); window.location.href='index.php';</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'error',
+                            title: 'Login Failed',
+                            message: 'Cannot execute insert to user.',
+                            icon: 'assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
+                
             }
         }
     }
@@ -123,10 +164,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 exit();
             } else {
-                echo "<script>alert('Incorrect password.'); window.location.href='index.php';</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'error',
+                            title: 'Login Failed',
+                            message: 'Invalid password.',
+                            icon: 'assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
             }
         } else {
-            echo "<script>alert('User not found or does not exist.'); window.location.href='index.php';</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'error',
+                            title: 'Login Failed',
+                            message: 'User not found or does not exist.',
+                            icon: 'assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
         }
     }
 }

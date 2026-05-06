@@ -1,7 +1,5 @@
-<?php include __DIR__ . '/../alert.php'; ?>
 <?php
 session_start();
-include '../confirm.php';
 require '../db_manager.php';
 
 // Check if user is logged in and is an admin
@@ -167,11 +165,11 @@ $logs_result = $read_conn->query($logs_query);
     <div class="left-container">
         <div class="left-btn">
            <button class="btn-toggle" id="btnAuditLogs" onclick="openModal('auditLogsPanel')">
-                <img src="../assets/task.png" alt="task">
+                <img src="../assets/auditlog.png" alt="auditlog">
                 <span class="btn-label">Audit Logs</span>
             </button>
             <button class="btn-toggle" id="btnFeatures" onclick="openModal('profilePanel')">
-                <img src="../assets/features.png" alt="features">
+                <img src="../assets/profile.png" alt="profile">
                 <span class="btn-label">Profile</span>
             </button>
         </div>

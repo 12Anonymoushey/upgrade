@@ -1,9 +1,9 @@
 <?php
-include '../alert.php';
 require_once '../db_manager.php';
 require_once '../admin/admin_processes/Feature_checker.php';
 require_once '../admin/admin_processes/Rank_checker.php';
 session_start();
+require_once(__DIR__ . '/../modal.php');
 $db = new DBManager();
 $write_conn = $db->getWriteConn();
 
@@ -50,7 +50,16 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             }
             else{
                 $write_conn->commit();
-                echo "<script>alert('Successfully approved note!');</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'Successfully approved note!.',
+                            icon: '../assets/logo.png',
+                        });
+                    };
+                </script>";
             }
         } catch(Exception $e)
         {
@@ -90,7 +99,16 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             }
             else{
                 $write_conn->commit();
-                echo "<script>alert('Successfully disapproved note!');</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'Successfully disapproved note!.',
+                            icon: '../assets/logo.png',
+                        });
+                    };
+                </script>";
             }
         } catch(Exception $e)
         {
@@ -113,7 +131,17 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             $update_stmt->execute();
 
             $write_conn->commit();
-            echo "<script>alert('Successfully updated note!');</script>";
+           echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'Successfully updated note!.',
+                            icon: '../assets/logo.png',
+                            redirect: '../user/user_home.php'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             $write_conn->rollback();
@@ -132,7 +160,17 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             $del_stmt->execute();
 
             $write_conn->commit();
-            echo "<script>alert('Successfully deleted note!');</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'Successfully deleted note!.',
+                            icon: '../assets/logo.png',
+                            redirect: '../user/user_home.php'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             $write_conn->rollback();
@@ -150,14 +188,33 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
             $stmt->bind_param("iss", $user_id, $title, $content);
             $stmt->execute();
             $write_conn->commit();
-            echo "<script>alert('Note Successfully Created')</script>";
+           echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Success!',
+                            message: 'Note Successfully Created.',
+                            icon: '../assets/logo.png',
+                            redirect: 'javascript:history.back()'
+                        });
+                    };
+                </script>";
         } catch(Exception $e) {
             $write_conn->rollback();
             echo "<script>alert('{$e->getMessage()}')</script>";
         }
     }
     else{
-         echo "<script>alert('nothing happened');</script>";
+         echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'notification',
+                            title: 'Notification',
+                            message: 'Nothing happened.',
+                            icon: '../assets/logo.png',
+                        });
+                    };
+                </script>";
     }
 }
 ?>
@@ -177,13 +234,13 @@ if($_SERVER["REQUEST_METHOD"] == 'POST' && isset($_POST['note']))
         <input type="hidden" name="user_home" value="true">
         <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($user_id);?>">
     </form>
-    <?php
+    <!-- <?php
         if($action == "create" || $action == "user_update" || $action == "user_delete") {
             echo "<script>document.getElementById('user_note').submit();</script>";
         } else {
             echo "<script>document.getElementById('admin_note').submit();</script>";
         }
-    ?>
+    ?> -->
 </body>
 </html>
 

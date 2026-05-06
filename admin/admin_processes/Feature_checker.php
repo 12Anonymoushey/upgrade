@@ -1,5 +1,5 @@
 <?php
-
+require_once(__DIR__ . '/../../modal.php');
 require_once '../db_manager.php';
 
 class Feature_checker{
@@ -43,7 +43,18 @@ class Feature_checker{
                                                     $feature_id : $feature_id - 1);
                     $user_feat_stmt->execute();
                     $this->write_conn->commit();
-                    echo "<script>alert('you have downgraded accessible features')</script>";
+                    // ang mga amo ni para ni sa alert. i change lang 
+                    echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'warning',
+                            title: 'Notification',
+                            message: 'You have downgraded accessible features',
+                            icon: 'assets/logo.png',
+                            redirect: 'index.php'
+                        });
+                    };
+                </script>";
                 } catch(Exception $e)
                 {
                     echo "<script>alert('{$e->getMessage()}')</script>";
@@ -62,7 +73,17 @@ class Feature_checker{
                     $user_feat_stmt->bind_param("ii", $user_id, $new_feat_id);
                     $user_feat_stmt->execute();
                     $this->write_conn->commit();
-                    echo "<script>alert('you have upgraded accessible features')</script>";
+                    echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Congrats!',
+                            message: 'You have upgraded accessible features',
+                            icon: 'assets/logo.png',
+                        });
+                    };
+                </script>";
+                    
                 } catch(Exception $e)
                 {
                     echo "<script>alert('{$e->getMessage()}')</script>";
@@ -71,7 +92,16 @@ class Feature_checker{
                 }
             }
             else {
-                echo "<script>alert('There are no changes in accessible features');</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'notification',
+                            title: 'Notification',
+                            message: 'There are no changes in accessible features',
+                            icon: 'assets/logo.png',
+                        });
+                    };
+                </script>";
             }
         }
         return null;

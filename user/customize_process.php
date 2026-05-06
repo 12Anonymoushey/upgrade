@@ -1,5 +1,4 @@
 <?php
-include '../alert.php';
 require_once '../db_manager.php';
 session_start();
 

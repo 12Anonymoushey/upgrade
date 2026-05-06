@@ -1,5 +1,5 @@
 <?php
-include '../alert.php';
+require_once(__DIR__ . '/../modal.php');
 require_once '../db_manager.php';
 require_once '../admin/admin_processes/Feature_checker.php';
 require_once '../admin/admin_processes/Rank_checker.php';
@@ -45,7 +45,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             }
             else{
                 $write_conn->commit();
-                echo "<script>alert('Task Successfully Approved')</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Approved',
+                            message: 'Task Successfully Approved',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
             }
         } catch(Exception $e)
         {
@@ -84,7 +93,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             }
             else{
                 $write_conn->commit();
-                echo "<script>alert('Task Successfully Un-Approved')</script>";
+                echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Disapproved',
+                            message: 'Task Successfully Un-Approved',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
             }
         } catch(Exception $e)
         {
@@ -106,7 +124,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             $update_stmt->bind_param("sii", $description, $user_id, $task_id);
             $update_stmt->execute();
             $write_conn->commit();
-            echo "<script>alert('Task Successfully Updated')</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Update',
+                            message: 'Task Successfully Updated',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             echo "<script>alert('{$e->getMessage()}')</script>";
@@ -124,7 +151,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             $del_stmt->bind_param("ii", $user_id, $task_id);
             $del_stmt->execute();
             $write_conn->commit();
-            echo "<script>alert('Task Successfully deleted')</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Delete',
+                            message: 'Task Successfully deleted.',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             echo "<script>alert('{$e->getMessage()}')</script>";
@@ -143,7 +179,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             $stmt->bind_param("iis", $user_id, $tool_id, $description);
             $stmt->execute();
             $write_conn->commit();
-            echo "<script>alert('Task Successfully created')</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Created',
+                            message: 'Task Successfully created.',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             $write_conn->rollback();
@@ -161,7 +206,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $write_conn->commit();
-            echo "<script>alert('Task Successfully finished, just wait for approval to earn points!')</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Finished',
+                            message: 'Task Successfully finished, just wait for the approval to earn points!',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             $write_conn->rollback();
@@ -179,7 +233,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
             $stmt->bind_param("i", $user_id);
             $stmt->execute();
             $write_conn->commit();
-            echo "<script>alert('Task Successfully unfinished')</script>";
+            echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'success',
+                            title: 'Unfinished',
+                            message: 'Task Successfully unfinished',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
         } catch(Exception $e)
         {
             $write_conn->rollback();
@@ -187,7 +250,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['task']))
         }
     }
     else{
-        echo "<script>alert('None of it was a value of action hmmmm')</script>";
+        echo "<script>
+                    window.onload = function() {
+                        triggerModal({
+                            theme: 'notification',
+                            title: 'Notification',
+                            message: 'None of it was a value of action hmmmm',
+                            icon: 'assets/logo.png'
+                        });
+                    };
+                </script>";
     }
 }
 
